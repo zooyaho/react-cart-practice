@@ -2,13 +2,14 @@
 // 프로젝트 일부의 로컬 이미지 이기때문에 동적으로 바인딩해야한다.
 import mealsImage from "../../assets/meals.jpeg";
 import classes from "./Header.module.css";
+import HeaderCartButton from "./HeaderCartButton";
 
 function Header() {
   return (
     <>
       <header className={classes.header}>
         <h1>ReactMeals</h1>
-        <button>Cart</button>
+        <HeaderCartButton />
       </header>
       <div className={classes["main-image"]}>
         <img src={mealsImage} alt="meals이미지" />
