@@ -12,7 +12,7 @@ function MealItem({ id, name, description, itemPrice }) {
       id,
       name,
       description,
-      price,
+      price: itemPrice,
       amount,
     });
   };
