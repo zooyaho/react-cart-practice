@@ -7,14 +7,31 @@ const defaultCartState = {
 };
 const cartReducer = (state, action) => {
   if (action.type === "ADD_CART") {
-    const updatedItems = state.items.concat(action.item); // 새로운 배열을 리턴!! push() X
+    const existingCartItemIndex = state.items.findIndex(
+      (item) => item.id === action.id
+    );
+    const existingCartItem = state.items[existingCartItemIndex]; // cart에 기존에 있는 item일 경우
+    let updatedItems;
+
+    if (existingCartItem) {
+      // 없다면 null이므로 false, 장바구니에 추가
+      const updatedItem = {
+        ...existingCartItem,
+        amount: existingCartItem.amount + action.amount,
+      };
+      updatedItems = [...state.items];
+      updatedItems[existingCartItemIndex] = updatedItem;
+    } else {
+      updatedItems = state.items.concat(action.item); // 새로운 배열을 리턴!! push() X
+    }
+
     const updatedTotalAmount =
       state.totalAmount + action.item.price * action.item.amount;
 
     return {
       items: updatedItems,
       totalAmount: updatedTotalAmount,
-    };
+    }; // 새로운 snapshot을 반환!
   }
   return defaultCartState; // action이 없을 경우 초기값 리턴~~
 };
