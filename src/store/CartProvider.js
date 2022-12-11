@@ -32,7 +32,33 @@ const cartReducer = (state, action) => {
       items: updatedItems,
       totalAmount: updatedTotalAmount,
     }; // 새로운 snapshot을 반환!
+  } else if (action.type === "REMOVE_CART") {
+    const existingCartItemIndex = state.items.findIndex(
+      (item) => item.id === action.id
+    );
+    const existingCartItem = state.items[existingCartItemIndex];
+    const updatedTotalAmount = state.totalAmount - existingCartItem.price;
+    let updatedItems;
+
+    if (updatedItems.amount === 1) {
+      // 기존 items에서 해당 item 삭제
+      updatedItems = state.items.filter((item) => item.id !== action.id);
+    } else {
+      // 기존에 있던 item의 수량만 수정
+      const updatedItem = {
+        ...existingCartItem,
+        amount: existingCartItem.amount - 1,
+      };
+      updatedItems = [...state.items];
+      updatedItems[existingCartItemIndex] = updatedItem;
+    }
+
+    return {
+      items: updatedItems,
+      totalAmount: updatedTotalAmount,
+    };
   }
+
   return defaultCartState; // action이 없을 경우 초기값 리턴~~
 };
 
