@@ -8,7 +8,7 @@ const defaultCartState = {
 const cartReducer = (state, action) => {
   if (action.type === "ADD_CART") {
     const existingCartItemIndex = state.items.findIndex(
-      (item) => item.id === action.id
+      (item) => item.id === action.item.id
     );
     const existingCartItem = state.items[existingCartItemIndex]; // cart에 기존에 있는 item일 경우
     let updatedItems;
@@ -17,7 +17,7 @@ const cartReducer = (state, action) => {
       // 없다면 null이므로 false, 장바구니에 추가
       const updatedItem = {
         ...existingCartItem,
-        amount: existingCartItem.amount + action.amount,
+        amount: existingCartItem.amount + action.item.amount,
       };
       updatedItems = [...state.items];
       updatedItems[existingCartItemIndex] = updatedItem;
@@ -40,7 +40,7 @@ const cartReducer = (state, action) => {
     const updatedTotalAmount = state.totalAmount - existingCartItem.price;
     let updatedItems;
 
-    if (updatedItems.amount === 1) {
+    if (existingCartItem.amount === 1) {
       // 기존 items에서 해당 item 삭제
       updatedItems = state.items.filter((item) => item.id !== action.id);
     } else {
