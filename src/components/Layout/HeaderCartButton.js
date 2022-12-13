@@ -27,7 +27,7 @@ function HeaderCartButton({ onClick }) {
     return () => {
       clearTimeout(timer);
     };
-  }, [cartCtx.items.length]);
+  }, [cartCtx.items]);
 
   return (
     <button className={btnClasses} onClick={onClick}>
