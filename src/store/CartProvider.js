@@ -31,7 +31,7 @@ const cartReducer = (state, action) => {
     return {
       items: updatedItems,
       totalAmount: updatedTotalAmount,
-    }; // 새로운 snapshot을 반환!
+    };
   } else if (action.type === "REMOVE_CART") {
     const existingCartItemIndex = state.items.findIndex(
       (item) => item.id === action.id
@@ -59,10 +59,10 @@ const cartReducer = (state, action) => {
     };
   }
 
-  return defaultCartState; // action이 없을 경우 초기값 리턴~~
+  return defaultCartState; // action이 없을 경우 초기값 리턴
 };
 
-// provider의 역할은 cart contex를 관리하고, 이 context를 접근하는 모든 컴포넌트에 제공한다.
+// provider의 역할은 cart context를 관리하고, 이 context를 접근하는 모든 컴포넌트에 제공한다.
 function CartProvider({ children }) {
   // reducer를 사용하여 cart를 state로 관리한다.
   const [cartState, dispatchCartAction] = useReducer(
