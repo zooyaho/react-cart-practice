@@ -6,37 +6,55 @@ import MealItem from "./MealItem/MealItem";
 
 function AvailableMeals() {
   const [meals, setMeals] = useState([]);
-  // const [error, setError] = useState(false);
-  // const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [httpError, setHttpError] = useState(null);
 
   useEffect(() => {
     const fetchMeals = async () => {
-      // setIsLoading(true);
-      try {
-        const res = await fetch(
-          "https://react-http-f49f3-default-rtdb.firebaseio.com/meals.json"
-        );
-        // if (!res.OK) {
-        //   throw new Error("not Data");
-        // }
-        const data = await res.json();
-        console.log(data);
-        const loadedMeals = [];
+      setIsLoading(true);
+      const res = await fetch(
+        "https://react-http-f49f3-default-rtdb.firebaseio.com/meals.json"
+      );
 
-        for (let key in data) {
-          loadedMeals.push({
-            id: key,
-            name: data[key].name,
-            description: data[key].description,
-            price: data[key].price,
-          });
-        }
-        setMeals(loadedMeals);
-      } catch (error) {}
-      // setIsLoading(false);
+      if (!res.ok) {
+        throw new Error("Something went wrong!");
+      }
+      const data = await res.json();
+      const loadedMeals = [];
+
+      for (let key in data) {
+        loadedMeals.push({
+          id: key,
+          name: data[key].name,
+          description: data[key].description,
+          price: data[key].price,
+        });
+      }
+      setMeals(loadedMeals);
+      setIsLoading(false);
     };
-    fetchMeals();
+
+    fetchMeals().catch((error) => {
+      setIsLoading(false);
+      setHttpError(error.message);
+    });
   }, []);
+
+  if (isLoading) {
+    return (
+      <section className={classes.mealsLoading}>
+        <p>Loading....</p>
+      </section>
+    );
+  }
+
+  if (httpError) {
+    return (
+      <section className={classes.mealsError}>
+        <p>{httpError}</p>
+      </section>
+    );
+  }
 
   const mealsList = meals.map((meal) => (
     <MealItem
