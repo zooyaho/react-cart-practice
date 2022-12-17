@@ -2,7 +2,7 @@ import useValidate from "../../hooks/use-validate";
 
 import classes from "./Checkout.module.css";
 
-function Checkout({ onCancel }) {
+function Checkout({ onCancel, onConfirm }) {
   const {
     value: nameValue,
     isValid: nameIsValid,
@@ -43,10 +43,19 @@ function Checkout({ onCancel }) {
     event.preventDefault();
 
     if (!formIsValid) return;
+
     nameResetInput();
     streetResetInput();
     postalResetInput();
     cityResetInput();
+
+    // submit data
+    onConfirm({
+      name: nameValue,
+      street: streetValue,
+      postalCode: postalValue,
+      city: cityValue,
+    });
   };
 
   const nameControlClasses = `${classes.control} ${

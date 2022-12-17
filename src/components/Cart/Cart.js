@@ -24,6 +24,16 @@ function Cart({ onClose }) {
     setIsChecked(true);
   };
 
+  const submitOrderHandler = (userData) => {
+    fetch("https://react-http-f49f3-default-rtdb.firebaseio.com/order.json", {
+      method: "POST",
+      body: JSON.stringify({
+        user: userData,
+        orderedItems: cartCtx.items,
+      }),
+    });
+  };
+
   const cartItems = (
     <ul className={classes["cart-items"]}>
       {cartCtx.items.map((item) => (
@@ -61,7 +71,11 @@ function Cart({ onClose }) {
         <span>Total Amount</span>
         <span>{totalAmount}</span>
       </div>
-      {isChecked ? <Checkout onCancel={onClose} /> : modalActions}
+      {isChecked ? (
+        <Checkout onConfirm={submitOrderHandler} onCancel={onClose} />
+      ) : (
+        modalActions
+      )}
     </Modal>
   );
 }
