@@ -62,3 +62,16 @@
   border-color: #aa0b20;
   background-color: #ffeff1;
 }
+
+.actions .submit:disabled:active,
+.actions .submit:disabled:hover,
+.actions .submit:disabled {
+  background-color: #ccc;
+  color: #292929;
+  border-color: #ccc;
+  cursor: not-allowed;
+}
+
+.error-text {
+  color: #b40e0e;
+}
