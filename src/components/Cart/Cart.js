@@ -8,6 +8,9 @@ import Checkout from "./Checkout";
 
 function Cart({ onClose }) {
   const [isChecked, setIsChecked] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [didSubmit, setDidSubmit] = useState(false);
+  const [httpError, setHttpError] = useState(null);
   const cartCtx = useContext(CartContext);
 
   const totalAmount = cartCtx.totalAmount.toFixed(2);
@@ -24,14 +27,28 @@ function Cart({ onClose }) {
     setIsChecked(true);
   };
 
-  const submitOrderHandler = (userData) => {
-    fetch("https://react-http-f49f3-default-rtdb.firebaseio.com/order.json", {
-      method: "POST",
-      body: JSON.stringify({
-        user: userData,
-        orderedItems: cartCtx.items,
-      }),
-    });
+  const submitOrderHandler = async (userData) => {
+    setIsSubmitting(true);
+    try {
+      const res = await fetch(
+        "https://react-http-f49f3-default-rtdb.firebaseio.com/order.json",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            user: userData,
+            orderedItems: cartCtx.items,
+          }),
+        }
+      );
+
+      if (!res.ok) throw new Error("Something went wrong!");
+    } catch (error) {
+      setIsSubmitting(false);
+      setDidSubmit(true);
+      setHttpError(error.message);
+    }
+    setIsSubmitting(false);
+    setDidSubmit(true);
   };
 
   const cartItems = (
@@ -64,8 +81,8 @@ function Cart({ onClose }) {
     </div>
   );
 
-  return (
-    <Modal onClose={onClose}>
+  const cartModalContent = (
+    <>
       {cartItems}
       <div className={classes.total}>
         <span>Total Amount</span>
@@ -76,6 +93,30 @@ function Cart({ onClose }) {
       ) : (
         modalActions
       )}
+    </>
+  );
+
+  const isSubmittingModalContent = <p>Sending order data...</p>;
+
+  const didSubmitModalContent = (
+    <>
+      <p>Successfully sent the order!!</p>
+      <div className={classes.actions}>
+        <button className={classes.button} onClick={onClose}>
+          close
+        </button>
+      </div>
+    </>
+  );
+
+  const httpErrorModalContent = <p>{httpError}</p>;
+
+  return (
+    <Modal onClose={onClose}>
+      {isSubmitting && !didSubmit && !httpError && isSubmittingModalContent}
+      {!isSubmitting && !httpError && !didSubmit && cartModalContent}
+      {!isSubmitting && didSubmit && !httpError && didSubmitModalContent}
+      {httpError && httpErrorModalContent}
     </Modal>
   );
 }
