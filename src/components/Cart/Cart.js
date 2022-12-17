@@ -42,9 +42,8 @@ function Cart({ onClose }) {
       );
 
       if (!res.ok) throw new Error("Something went wrong!");
+      cartCtx.clearCart();
     } catch (error) {
-      setIsSubmitting(false);
-      setDidSubmit(true);
       setHttpError(error.message);
     }
     setIsSubmitting(false);

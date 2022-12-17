@@ -57,6 +57,8 @@ const cartReducer = (state, action) => {
       items: updatedItems,
       totalAmount: updatedTotalAmount,
     };
+  } else if (action.type === "CLEAT") {
+    return defaultCartState;
   }
 
   return defaultCartState; // action이 없을 경우 초기값 리턴
@@ -76,12 +78,16 @@ function CartProvider({ children }) {
   const removeItemFromCartHandler = (id) => {
     dispatchCartAction({ type: "REMOVE_CART", id: id });
   };
+  const clearCartHandler = () => {
+    dispatchCartAction({ type: "CLEAR" });
+  };
 
   const cartContext = {
     items: cartState.items,
     totalAmount: cartState.totalAmount,
     addItem: addItemToCartHandler,
     removeItem: removeItemFromCartHandler,
+    clearCart: clearCartHandler,
   };
   return (
     <CartContext.Provider value={cartContext}>{children}</CartContext.Provider>
