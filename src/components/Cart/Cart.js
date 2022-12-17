@@ -1,11 +1,13 @@
-import { useContext } from "react";
+import { useState, useContext } from "react";
 
 import Modal from "../UI/Modal";
 import classes from "./Cart.module.css";
 import CartContext from "../../store/cart-context";
 import CartItem from "./CartItem";
+import Checkout from "./Checkout";
 
 function Cart({ onClose }) {
+  const [isChecked, setIsChecked] = useState(false);
   const cartCtx = useContext(CartContext);
 
   const totalAmount = cartCtx.totalAmount.toFixed(2);
@@ -16,6 +18,10 @@ function Cart({ onClose }) {
   };
   const cartItemAddCartItem = (item) => {
     cartCtx.addItem({ ...item, amount: 1 });
+  };
+
+  const orderHandler = () => {
+    setIsChecked(true);
   };
 
   const cartItems = (
@@ -34,6 +40,20 @@ function Cart({ onClose }) {
       ))}
     </ul>
   );
+
+  const modalActions = (
+    <div className={classes.actions}>
+      <button className={classes["button--alt"]} onClick={onClose}>
+        close
+      </button>
+      {hasItems && (
+        <button className={classes.button} onClick={orderHandler}>
+          order
+        </button>
+      )}
+    </div>
+  );
+
   return (
     <Modal onClose={onClose}>
       {cartItems}
@@ -41,12 +61,7 @@ function Cart({ onClose }) {
         <span>Total Amount</span>
         <span>{totalAmount}</span>
       </div>
-      <div className={classes.actions}>
-        <button className={classes["button--alt"]} onClick={onClose}>
-          close
-        </button>
-        {hasItems && <button className={classes.button}>order</button>}
-      </div>
+      {isChecked ? <Checkout onCancel={onClose} /> : modalActions}
     </Modal>
   );
 }
